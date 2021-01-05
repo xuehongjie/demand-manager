@@ -4,9 +4,10 @@
       <el-card :body-style="{ padding: '0px' }">
         <img :src="project.img" class="project-image" />
         <el-row type="flex" class="project-info">
-          <el-col :span="21">{{ project.name }}</el-col>
-          <el-col :span="3">
-            <el-button class="button-edit" type="text" icon="el-icon-edit-outline"></el-button>
+          <el-col :span="16">{{ project.name }}</el-col>
+          <el-col class="operation-wrapper" :span="8">
+            <el-button class="button-operation" type="text" icon="el-icon-edit-outline" @click="editClick(project)"></el-button>
+            <el-button class="button-operation" type="text" icon="el-icon-delete" @click="deleteClick(project)"></el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -20,7 +21,9 @@
       </el-card>
     </div>
 
-    <dialog-add :visible.sync="showProjectAdd" />
+    <!-- 新建项目 -->
+    <dialog-add :default-value="currentData" :visible.sync="showProjectAdd" @confirm="projectAdd" />
+    <dialog-delete :visible.sync="showProjectDelete" @confirm="projectDelete" />
   </d2-container>
 </template>
 
@@ -28,16 +31,20 @@
 import api from '@/api';
 
 import DialogAdd from './components/DialogAdd';
+import DialogDelete from './components/DialogDelete';
 
 export default {
   name: 'ProjectList',
   components: {
     DialogAdd,
+    DialogDelete,
   },
   data() {
     return {
       projectList: [],
       showProjectAdd: false, // 是否展示添加弹窗
+      showProjectDelete: false, // 是否展示删除弹窗
+      currentData: null, // 当前点击的数据
     };
   },
   methods: {
@@ -54,6 +61,30 @@ export default {
     // 点击项目
     projectClick(project) {
       console.log(project);
+    },
+    // 点击编辑按钮
+    editClick(project) {
+      this.currentData = project;
+      this.showProjectAdd = true;
+    },
+    // 点击删除按钮
+    deleteClick(project) {
+      this.currentData = project;
+      this.showProjectDelete = true;
+    },
+    // 添加项目
+    projectAdd(project) {
+      api.PROJECT_ADD(project).then(res => {
+        console.log('---------res', res);
+        this.getProjectList();
+      });
+    },
+    // 删除项目
+    projectDelete() {
+      let { id } = this.currentData;
+      api.PROJECT_DELETE(id).then(res => {
+        console.log('---------res', res);
+      });
     },
   },
   created() {
@@ -86,8 +117,14 @@ export default {
       padding: 5px 8px;
       font-size: 12px;
     }
-    .button-edit {
+    .operation-wrapper {
+      text-align: center;
+    }
+    .button-operation {
       padding: 0;
+      & + .button-operation {
+        margin-left: 5px;
+      }
     }
   }
   .project-add {
