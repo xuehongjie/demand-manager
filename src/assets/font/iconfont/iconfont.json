@@ -1,0 +1,16 @@
+{
+  "id": "2313314",
+  "name": "需求管理系统",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1238467",
+      "name": "project",
+      "font_class": "project",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    }
+  ]
+}

@@ -2,7 +2,9 @@
   <d2-container class="page-project-list">
     <div class="project-wrapper" v-for="(project, index) in projectList" :key="index" @click="projectClick(project)">
       <el-card :body-style="{ padding: '0px' }">
-        <img :src="project.img" class="project-image" />
+        <div class="project-image">
+          <i class="iconfont icon-project"></i>
+        </div>
         <el-row type="flex" class="project-info">
           <el-col :span="16">{{ project.name }}</el-col>
           <el-col class="operation-wrapper" :span="8">
@@ -54,6 +56,7 @@ export default {
     },
     // 获取项目列表
     getProjectList() {
+      console.log('-------------------getProjectList');
       api.PROJECT_LIST().then(res => {
         this.projectList = res;
       });
@@ -74,8 +77,7 @@ export default {
     },
     // 添加项目
     projectAdd(project) {
-      api.PROJECT_ADD(project).then(res => {
-        console.log('---------res', res);
+      api.PROJECT_ADD_OR_UPDATE(project).then(res => {
         this.getProjectList();
       });
     },
@@ -83,7 +85,8 @@ export default {
     projectDelete() {
       let { id } = this.currentData;
       api.PROJECT_DELETE(id).then(res => {
-        console.log('---------res', res);
+        this.currentData = null;
+        this.getProjectList();
       });
     },
   },
@@ -105,13 +108,22 @@ export default {
     margin-right: 10px;
     margin-bottom: 10px;
     font-size: 0;
+    cursor: pointer;
     &::after {
       content: '';
       clear: both;
     }
     .project-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 100%;
       height: 160px;
+      background-color: #f6f6f6;
+    }
+    .icon-project {
+      color: #ccc;
+      font-size: 80px;
     }
     .project-info {
       padding: 5px 8px;
@@ -128,12 +140,6 @@ export default {
     }
   }
   .project-add {
-    .project-image {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f6f6f6;
-    }
     /* 加号 */
     .el-icon-plus {
       color: #ccc;

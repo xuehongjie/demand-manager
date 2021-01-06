@@ -16,6 +16,6 @@ function supplementPath(menu) {
 export const menuHeader = supplementPath([]);
 
 export const menuAside = supplementPath([
-  { path: '/index', title: '首页', icon: 'home' },
+  { path: '/index', title: '工作台', icon: 'home' },
   { path: '/project/list', title: '项目', icon: 'th-large' },
 ]);

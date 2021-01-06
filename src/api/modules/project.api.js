@@ -1,14 +1,13 @@
+// const PROJECT_DEFAULT_IMAGE = require('@/assets/images/project.png')
 let projectList = [
   {
     id: 1,
     name: '项目1',
-    img: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
     desc: '',
   },
   {
     id: 2,
     name: '项目2',
-    img: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
     desc: '',
   },
 ];
@@ -33,15 +32,23 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
    * @description 新增项目
    * @param {Object} data 项目数据
    */
-  PROJECT_ADD(data = {}) {
+  PROJECT_ADD_OR_UPDATE(data = {}) {
     // 模拟数据
     mock.onAny('/project/add').reply(config => {
-      projectList.push({
-        id: faker.random.uuid(),
-        img: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-        desc: '',
-        ...data,
-      });
+      let { id } = data;
+      // 有id则修改
+      if (id) {
+        let index = projectList.findIndex(project => project.id === id);
+
+        projectList[index] = data;
+      } else {
+        projectList.push({
+          id: faker.random.uuid(),
+          desc: '',
+          ...data,
+        });
+      }
+
       return tools.responseSuccess();
     });
     // 接口请求

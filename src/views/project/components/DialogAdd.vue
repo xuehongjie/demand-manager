@@ -57,10 +57,7 @@ export default {
     dialogVisible: {
       handler(val) {
         if (!val) {
-          this.project = {
-            name: '',
-            desc: '',
-          };
+          this.initData();
         }
         this.$emit('update:visible', val);
       },
@@ -69,12 +66,21 @@ export default {
       handler(val) {
         if (val) {
           this.project = cloneDeep(val);
+        } else {
+          this.initData();
         }
       },
       immediate: true,
     },
   },
   methods: {
+    // 初始化数据
+    initData() {
+      this.project = {
+        name: '',
+        desc: '',
+      };
+    },
     confirm() {
       this.$refs.form.validate(valid => {
         if (valid) {
