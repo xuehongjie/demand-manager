@@ -15,7 +15,9 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
   SYS_USER_LOGIN(data = {}) {
     // 模拟数据
     mock.onAny('/login').reply(config => {
+      // 查找用户是否存在
       const user = find(users, tools.parse(config.data));
+      // 用户存在，且密码正确则返回成功的token，用户不存在或用户名密码不正确则返回错误提示
       return user
         ? tools.responseSuccess(assign({}, user, { token: faker.random.uuid() }))
         : tools.responseError({}, '账号或密码不正确');

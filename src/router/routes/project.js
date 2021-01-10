@@ -15,7 +15,7 @@ export default [
     path: 'project/detail',
     name: 'projectDetail',
     meta: {
-      title: '项目详情',
+      title: '项目1',
       auth: true,
     },
     component: _import('project/detail'),
