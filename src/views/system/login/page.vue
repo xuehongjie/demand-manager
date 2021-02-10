@@ -12,8 +12,8 @@
           <div class="page-login--form">
             <el-card shadow="never">
               <el-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
-                <el-form-item prop="username">
-                  <el-input type="text" v-model="formLogin.username" placeholder="用户名">
+                <el-form-item prop="account">
+                  <el-input type="text" v-model="formLogin.account" placeholder="用户名">
                     <i slot="prepend" class="fa fa-user-circle-o"></i>
                   </el-input>
                 </el-form-item>
@@ -25,7 +25,7 @@
                 <el-form-item prop="code">
                   <el-input type="text" v-model="formLogin.code" placeholder="验证码">
                     <template slot="append">
-                      <img class="login-code" src="./image/login-code.png" />
+                      <img class="login-code" :src="codeUrl" @click="refreshCode" />
                     </template>
                   </el-input>
                 </el-form-item>
@@ -48,38 +48,40 @@
 <script>
 import { mapActions } from 'vuex';
 import localeMixin from '@/locales/mixin.js';
+
 export default {
   mixins: [localeMixin],
   data() {
     return {
+      codeUrl: '',
       // 快速选择用户
       dialogVisible: false,
       users: [
         {
           name: 'Admin',
-          username: 'admin',
+          account: 'admin',
           password: 'admin',
         },
         {
           name: 'Editor',
-          username: 'editor',
+          account: 'editor',
           password: 'editor',
         },
         {
           name: 'User1',
-          username: 'user1',
+          account: 'user1',
           password: 'user1',
         },
       ],
       // 表单
       formLogin: {
-        username: 'test',
+        account: 'test',
         password: '123456',
-        code: 'v9am',
+        code: '',
       },
       // 表单校验
       rules: {
-        username: [
+        account: [
           {
             required: true,
             message: '请输入用户名',
@@ -105,12 +107,20 @@ export default {
   },
   methods: {
     ...mapActions('d2admin/account', ['login']),
+    init() {
+      this.refreshCode();
+    },
+    // 刷新验证码
+    refreshCode() {
+      let { apiHost, common } = this.$url;
+      this.codeUrl = `${apiHost}${common.verifyCode}?t=${Date.now()}`;
+    },
     /**
      * @description 接收选择一个用户快速登录的事件
      * @param {Object} user 用户信息
      */
     handleUserBtnClick(user) {
-      this.formLogin.username = user.username;
+      this.formLogin.account = user.account;
       this.formLogin.password = user.password;
       this.submit();
     },
@@ -120,14 +130,10 @@ export default {
     // 提交登录信息
     submit() {
       this.$refs.loginForm.validate(valid => {
-        let { username, password } = this.formLogin;
         // 判断校验是否通过
         if (valid) {
           // 调用登录接口
-          this.login({
-            username: username,
-            password: password,
-          }).then(() => {
+          this.login(this.formLogin).then(() => {
             // 重定向对象不存在则返回顶层路径
             this.$router.replace(this.$route.query.redirect || '/');
           });
@@ -137,6 +143,9 @@ export default {
         }
       });
     },
+  },
+  created() {
+    this.init();
   },
 };
 </script>

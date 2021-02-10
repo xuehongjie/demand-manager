@@ -8,8 +8,8 @@
         <el-row type="flex" class="project-info">
           <el-col :span="16">{{ project.name }}</el-col>
           <el-col class="operation-wrapper" :span="8">
-            <el-button class="button-operation" type="text" icon="el-icon-edit-outline" @click="editClick(project)"></el-button>
-            <el-button class="button-operation" type="text" icon="el-icon-delete" @click="deleteClick(project)"></el-button>
+            <el-button class="button-operation" type="text" icon="el-icon-edit-outline" @click.stop="editClick(project)"></el-button>
+            <el-button class="button-operation" type="text" icon="el-icon-delete" @click.stop="deleteClick(project)"></el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -30,8 +30,6 @@
 </template>
 
 <script>
-import api from '@/api';
-
 import DialogAdd from './components/DialogAdd';
 import DialogDelete from './components/DialogDelete';
 
@@ -56,14 +54,22 @@ export default {
     },
     // 获取项目列表
     getProjectList() {
-      console.log('-------------------getProjectList');
-      api.PROJECT_LIST().then(res => {
-        this.projectList = res;
+      this.$api.PROJECT_LIST().then(res => {
+        let { list } = res;
+
+        this.projectList = list;
       });
     },
     // 点击项目
     projectClick(project) {
       console.log(project);
+      let { id } = project;
+      this.$router.push({
+        name: 'requirementList',
+        query: {
+          id,
+        },
+      });
     },
     // 点击编辑按钮
     editClick(project) {
@@ -77,14 +83,14 @@ export default {
     },
     // 添加项目
     projectAdd(project) {
-      api.PROJECT_ADD_OR_UPDATE(project).then(res => {
+      this.$api.PROJECT_ADD_OR_UPDATE(project).then(res => {
         this.getProjectList();
       });
     },
     // 删除项目
     projectDelete() {
       let { id } = this.currentData;
-      api.PROJECT_DELETE(id).then(res => {
+      this.$api.PROJECT_DELETE(id).then(res => {
         this.currentData = null;
         this.getProjectList();
       });
