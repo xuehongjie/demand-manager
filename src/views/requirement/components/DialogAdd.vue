@@ -1,12 +1,21 @@
 <template>
-  <el-dialog title="新增项目" width="500px" :visible.sync="dialogVisible" :modal-append-to-body="false">
+  <el-dialog title="新增需求" top="1vh" width="500px" :visible.sync="dialogVisible" :modal-append-to-body="false">
     <div class="dialog-add-wrapper">
-      <el-form label-width="80px" :model="project" :rules="rules" ref="form">
-        <el-form-item label="项目名称" prop="name">
-          <el-input v-model="project.name"></el-input>
+      <el-form label-width="80px" :model="requirement" :rules="rules" ref="form">
+        <el-form-item label="标题" prop="name">
+          <el-input></el-input>
         </el-form-item>
-        <el-form-item label="项目描述" prop="description">
-          <el-input type="textarea" rows="5" v-model="project.description"></el-input>
+        <el-form-item label="需求描述" prop="desc">
+          <el-input type="textarea" rows="5"></el-input>
+        </el-form-item>
+        <el-form-item label="优先级" prop="priority">
+          <el-input></el-input>
+        </el-form-item>
+        <el-form-item label="严重程度" prop="level">
+          <el-input></el-input>
+        </el-form-item>
+        <el-form-item label="处理人" prop="handler">
+          <el-input></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -38,7 +47,7 @@ export default {
   data() {
     return {
       dialogVisible: false, // 是否展示弹窗
-      project: {
+      requirement: {
         name: '',
         description: '',
       }, // 项目信息

@@ -1,6 +1,7 @@
 import url from '@/url';
 import { statusText } from '@/map/requirement/status';
-import { levelText } from '@/map/requirement/level';
+import { severityText } from '@/map/requirement/severity';
+import { priorityText } from '@/map/requirement/priority';
 
 const { requirement } = url;
 
@@ -9,20 +10,21 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
    * @description 获取需求列表
    * @param {Object} page 分页参数
    */
-  REQUIREMENT_LIST(page = {}) {
+  REQUIREMENT_LIST(data) {
     return request({
       method: 'POST',
       url: requirement.list,
-      data: page,
+      data,
     }).then(res => {
       let { list } = res;
       list = list.map(item => {
-        let { status, level } = item;
+        let { status, severity, priority } = item;
 
         return {
           ...item,
           statusText: statusText[status],
-          levelText: levelText[level],
+          severityText: severityText[severity],
+          priorityText: priorityText[priority],
         };
       });
       return {
