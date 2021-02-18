@@ -1,39 +1,84 @@
 <template>
   <d2-container class="page-requirement-list">
-    <el-row>
-      <el-button type="primary" size="mini" @click="showRequirementAdd = true">新增</el-button>
-    </el-row>
-    <el-table :data="requirementList" style="width: 100%">
-      <el-table-column prop="title" label="标题"> </el-table-column>
-      <el-table-column prop="severityText" label="严重程度"> </el-table-column>
-      <el-table-column prop="priorityText" label="优先级"> </el-table-column>
-      <el-table-column prop="statusText" label="状态"> </el-table-column>
-      <el-table-column prop="handler" label="处理人"> </el-table-column>
-      <el-table-column prop="creater" label="创建人"> </el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
-        <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <dialog-add :default-value="currentData" :visible.sync="showRequirementAdd" @confirm="requirementAdd" />
+    <j-table
+      :table="tableConfig"
+      :table-label="tableColumn"
+      :table-data="requirementList"
+      @click="actionClick"
+      @row-click="rowClick"
+    ></j-table>
   </d2-container>
 </template>
 <script>
-import DialogAdd from './components/DialogAdd';
-
 export default {
   name: 'RequirementList',
-  components: {
-    DialogAdd,
-  },
   data() {
     return {
       query: {},
       currentData: null,
       requirementList: [],
       showRequirementAdd: false,
+      tableColumn: [
+        {
+          label: '标题',
+          prop: 'title',
+          type: 'link',
+        },
+        {
+          label: '严重程度',
+          prop: 'severityText',
+        },
+        {
+          label: '优先级',
+          prop: 'priorityText',
+        },
+        {
+          label: '状态',
+          prop: 'statusText',
+        },
+        {
+          label: '处理人',
+          prop: 'handler',
+        },
+        {
+          label: '创建人',
+          prop: 'creater',
+        },
+        {
+          type: 'operation',
+          label: '操作',
+          formatter: function(row, column, cellValue, index) {
+            let { permissionDelete } = this.permissions || {};
+            if (permissionDelete) {
+              return [
+                ...cellValue,
+                {
+                  type: 'detele',
+                  label: '删除',
+                },
+              ];
+            } else {
+              return cellValue;
+            }
+          },
+          operations: [
+            {
+              type: 'edit',
+              label: '编辑',
+            },
+          ],
+        },
+      ],
+      tableConfig: {
+        operations: [
+          {
+            label: '新增需求',
+            size: 'small',
+            type: 'primary',
+            event: 'requirementPublish',
+          },
+        ],
+      },
     };
   },
   methods: {
@@ -55,12 +100,50 @@ export default {
         });
     },
     handleClick() {},
-    confirm() {},
-    requirementAdd() {},
+    actionClick(action) {
+      let { clickItem } = action || {};
+      let { event } = clickItem || {};
+
+      if (event === 'requirementPublish') {
+        this.clickGoPublish();
+      }
+    },
+    // 前往发布需求页面
+    clickGoPublish(item) {
+      let { id: projectId = '' } = this.query;
+      let { id = '' } = item || {};
+      let routeName = 'requirementPublish';
+
+      if (id) {
+        routeName = 'requirementEdit';
+      }
+
+      this.$router.push({
+        name: routeName,
+        query: {
+          projectId,
+          requirementId: id,
+        },
+      });
+    },
+    // 点击行数据
+    rowClick(rowInfo) {
+      let { prop, row } = rowInfo || {};
+
+      switch (prop) {
+        // 点击标题时跳转
+        case 'title':
+          this.clickGoPublish(row);
+          break;
+        case 'jyf_operations':
+          this.clickGoPublish(row);
+          break;
+      }
+    },
   },
   created() {
     let { query } = this.$route;
-    this.query = query;
+    this.query = query || {};
     this.init();
   },
 };

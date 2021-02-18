@@ -11,12 +11,21 @@ export default [
     component: _import('requirement/list'),
   },
   {
-    path: 'requirement/detail',
-    name: 'requirementDetail',
+    path: 'requirement/publish',
+    name: 'requirementPublish',
     meta: {
-      title: '需求',
+      title: '发布需求',
       auth: true,
     },
-    component: _import('requirement/detail'),
+    component: _import('requirement/publish'),
+  },
+  {
+    path: 'requirement/edit',
+    name: 'requirementEdit',
+    meta: {
+      title: '修改需求',
+      auth: true,
+    },
+    component: _import('requirement/publish'),
   },
 ];

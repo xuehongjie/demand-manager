@@ -1,8 +1,8 @@
 // 需求优先级
 export const priorityMap = {
   high: 1,
-  middle: 3,
-  low: 4,
+  middle: 2,
+  low: 3,
 };
 
 export const priorityText = {

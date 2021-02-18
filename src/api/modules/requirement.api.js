@@ -44,4 +44,15 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
       data,
     });
   },
+  /**
+   * @description 查询需求详情
+   * @param {*} id 需求id
+   */
+  REQUIREMENT_DETAIL(id) {
+    return request({
+      method: 'POST',
+      url: requirement.detail,
+      data: { id },
+    });
+  },
 });
