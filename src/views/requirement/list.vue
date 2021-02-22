@@ -38,7 +38,7 @@ export default {
         },
         {
           label: '处理人',
-          prop: 'handler',
+          prop: 'handler_name',
         },
         {
           label: '创建人',

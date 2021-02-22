@@ -15,6 +15,25 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
     });
   },
   /**
+   * @description 获取项目列表
+   * @param {Object} page 分页参数
+   */
+  PROJECT_TAB_LIST(page = {}) {
+    return request({
+      method: 'POST',
+      url: project.tabList,
+      data: page,
+    }).then(list => {
+      return (list || []).map(item => {
+        let { id } = item;
+        return {
+          ...item,
+          value: `${id}`,
+        };
+      });
+    });
+  },
+  /**
    * @description 新增/修改项目
    * @param {Object} data 项目数据
    */
