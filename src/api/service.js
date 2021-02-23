@@ -9,7 +9,9 @@ import { errorLog, errorCreate } from './tools';
  */
 function createService() {
   // 创建一个 axios 实例
-  const service = axios.create();
+  const service = axios.create({
+    withCredentials: true,
+  });
   // 请求拦截
   service.interceptors.request.use(
     config => config,

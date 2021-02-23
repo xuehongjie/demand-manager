@@ -28,4 +28,13 @@ export default [
     },
     component: _import('requirement/publish'),
   },
+  {
+    path: 'requirement/detail',
+    name: 'requirementDetail',
+    meta: {
+      title: '需求详情',
+      auth: true,
+    },
+    component: _import('requirement/detail'),
+  },
 ];

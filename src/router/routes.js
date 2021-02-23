@@ -61,7 +61,6 @@ const frameIn = [
   },
 ];
 
-console.log('------------routesOut', routesOut);
 /**
  * 在主框架之外显示
  */

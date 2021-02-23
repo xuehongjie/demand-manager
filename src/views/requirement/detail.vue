@@ -1,6 +1,18 @@
 <template>
-  <d2-container class="page-requirement-publish">
-    <j-form :form-config="formConfig" :form-data="requirement" @submit="formSubmit" ref="jForm" foot-active></j-form>
+  <d2-container class="page-requirement-detail">
+    <el-row> 标题：{{ requirement.title }} </el-row>
+    <el-row>
+      需求描述：
+      <div v-html="requirement.description"></div>
+    </el-row>
+    <el-row>
+      <el-col :span="8"></el-col>
+      <el-col :span="8"></el-col>
+      <el-col :span="8"></el-col>
+    </el-row>
+    <j-form :form-config="formConfig" :form-data="requirement" @submit="formSubmit" ref="jForm">
+      <template #description="">11</template>
+    </j-form>
   </d2-container>
 </template>
 <script>
@@ -12,7 +24,55 @@ export default {
     return {
       query: {},
       requirement: {}, // 项目信息
-      formConfig: {},
+      formConfig: {
+        title: {
+          type: 'input',
+          label: '标题',
+          props: {
+            type: 'text',
+          },
+          rules: [{ required: true, message: '标题不能为空' }],
+        },
+        description: {
+          type: 'slot',
+          slotName: 'description',
+          label: '需求描述',
+          props: {},
+          rules: [{ required: true, message: '需求描述不能为空' }],
+        },
+        type: {
+          type: 'select',
+          label: '缺陷类型',
+          width: 200,
+          props: {
+            type: 'text',
+          },
+          options: [],
+        },
+        severity: {
+          type: 'select',
+          label: '严重程度',
+          width: 200,
+          props: {
+            type: 'text',
+          },
+          options: [],
+        },
+        priority: {
+          type: 'select',
+          label: '优先级',
+          width: 200,
+          props: {
+            type: 'text',
+          },
+          options: [],
+        },
+        status: {
+          type: 'radio',
+          label: '下一状态',
+          options: [],
+        },
+      },
     };
   },
   watch: {
@@ -27,18 +87,8 @@ export default {
   },
   methods: {
     init() {
-      let { requirementId, type } = this.query;
-      let formConfigMap = {
-        1: require('@/views/requirement/config/requirement').default,
-        2: require('@/views/requirement/config/bug').default,
-      };
-      this.formConfig = formConfigMap[type];
-      this.requirement.type = type;
-
-      // 缺陷才请求严重程度等下拉选项
-      if (`${type}` === '2') {
-        this.initSelectOption();
-      }
+      let { requirementId } = this.query;
+      this.initSelectOption();
 
       if (requirementId) {
         this.getRequirementDetail();
@@ -46,9 +96,10 @@ export default {
     },
     // 初始化下拉框选项
     initSelectOption() {
-      let codeList = ['requirement_priority', 'requirement_severity'];
+      let codeList = ['requirement_type', 'requirement_priority', 'requirement_severity'];
       this.$api.getDictionary(codeList).then(res => {
-        let { requirement_priority: priority, requirement_severity: severity } = res;
+        let { requirement_type: type, requirement_priority: priority, requirement_severity: severity } = res;
+        this.formConfig.type.options = type || [];
         this.formConfig.priority.options = priority || [];
         this.formConfig.severity.options = severity || [];
       });
@@ -74,10 +125,7 @@ export default {
         };
 
         console.log(res);
-        this.requirement = {
-          ...this.requirement,
-          ...res,
-        };
+        this.requirement = res;
         this.formConfig.status.options = statusActionMap[status] || [{ label: '保持', value: status }];
       });
     },
@@ -102,7 +150,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.page-requirement-publish {
+.page-requirement-detail {
   transform: translate3d(0, 0, 0);
 }
 </style>

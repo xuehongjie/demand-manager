@@ -2,10 +2,10 @@
   <div class="wrapper">
     <el-form ref="jyf_form" :model="formData" :rules="rules">
       <!-- 普通form表单 -->
-      <template v-if="type == 1">
+      <template v-if="`${type}` === '1'">
         <div class="formItem-body">
           <!-- 一行排列一个 -->
-          <template v-if="isRow === true">
+          <template v-if="isRow">
             <el-row v-for="(item, index) in formConfig_" :key="index">
               <!-- 指定col时 -->
               <el-col v-if="item.col" v-show="!item.hidden" :span="item.col">
@@ -178,7 +178,7 @@ export default {
     cardChange(params) {
       // 删除自动填充的key
       Object.keys(this.formData).forEach(ele => {
-        if (ele.indexOf('el_component') != -1) {
+        if (ele.indexOf('el_component') !== -1) {
           this.$delete(this.formData, ele);
         }
       });
@@ -188,7 +188,7 @@ export default {
     formItemChange(params) {
       // 删除自动填充的key
       Object.keys(this.formData).forEach(ele => {
-        if (ele.indexOf('el_component') != -1) {
+        if (ele.indexOf('el_component') !== -1) {
           this.$delete(this.formData, ele);
         }
       });
@@ -212,7 +212,7 @@ export default {
     // 表单的重置事件
     resetForm() {
       let data = this.formConfig_;
-      if (this.type == 1) {
+      if (`${this.type}` === '1') {
         data.forEach((ele, index) => {
           if (ele.propGroup) {
             ele.propGroup.forEach(e => {
@@ -220,7 +220,7 @@ export default {
             });
           }
         });
-      } else if (this.type == 2) {
+      } else if (`${this.type}` === '2') {
         data.forEach((ele, index) => {
           ele.children.forEach((e, i) => {
             if (e.propGroup) {
@@ -237,7 +237,7 @@ export default {
     // 初始化解析数据  重构formConfig 原因是form组件的model只能接收Object
     initData(data) {
       data = _.cloneDeep(data);
-      if (this.type == 1) {
+      if (`${this.type}` === '1') {
         if (Array.isArray(data)) {
           data.forEach((ele, index) => {
             // 解析rules
@@ -352,7 +352,7 @@ export default {
         ele.col = 24;
       }
       // 自动填充key
-      if (ele.prop == undefined) {
+      if (ele.prop === undefined) {
         ele.prop = 'el_component' + Math.ceil(Math.random() * 10000);
       }
       // 为组件赋初始化值
@@ -360,14 +360,14 @@ export default {
         ele.propGroup.forEach(e => {
           this.$set(this.formData, e, null);
         });
-      } else if (ele.prop && this.formData[ele.prop] === undefined && ele.prop.indexOf('el_component') == -1) {
+      } else if (ele.prop && this.formData[ele.prop] === undefined && ele.prop.indexOf('el_component') === -1) {
         this.$set(this.formData, ele.prop, null);
       }
       return ele;
     },
     // 解析rules
     analysisRules(rules) {
-      if (rules && this.type == 1) {
+      if (rules && `${this.type}` === '1') {
         Object.keys(rules).forEach((ele, index) => {
           this.formConfig_.forEach((e, i) => {
             if (e.prop === ele) {
@@ -375,7 +375,7 @@ export default {
             }
           });
         });
-      } else if (rules && this.type == 2) {
+      } else if (rules && `${this.type}` === '2') {
         Object.keys(rules).forEach((ele, index) => {
           this.formConfig_.forEach((e, i) => {
             e.children.forEach(e_ => {

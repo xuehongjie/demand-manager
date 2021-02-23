@@ -11,3 +11,4 @@ Vue.use(JTable);
 Vue.component('d2-container', d2Container);
 Vue.component('d2-icon', () => import('./d2-icon'));
 Vue.component('d2-icon-svg', () => import('./d2-icon-svg/index.vue'));
+Vue.component('d2-quill', () => import('./d2-quill'))

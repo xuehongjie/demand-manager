@@ -1,7 +1,7 @@
 <template>
   <d2-container class="page-project-list">
     <div class="project-wrapper" v-for="(project, index) in projectList" :key="index" @click="projectClick(project)">
-      <el-card :body-style="{ padding: '0px' }">
+      <el-card shadow="hover" :body-style="{ padding: '0px' }">
         <div class="project-image">
           <i class="iconfont icon-project"></i>
         </div>

@@ -107,7 +107,7 @@ export default {
       let { id = '', project_id: projectId } = item || {};
 
       this.$router.push({
-        name: 'requirementEdit',
+        name: 'requirementDetail',
         query: {
           projectId,
           requirementId: id,

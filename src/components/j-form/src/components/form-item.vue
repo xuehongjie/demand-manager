@@ -22,9 +22,21 @@
           </div>
         </el-form-item>
         <!-- input 输入框 -->
-        <el-form-item v-if="formItemConfig.type == 'input'" v-bind="formItemConfig" :required="undefined" label="" labelWidth="" :prop="formItemProp">
+        <el-form-item
+          v-if="formItemConfig.type == 'input'"
+          v-bind="formItemConfig"
+          :required="undefined"
+          label=""
+          labelWidth=""
+          :prop="formItemProp"
+        >
           <div class="form-item-content-border">
-            <el-input v-model="formData[formItemConfig.prop]" v-bind="formItemConfig.props" clearable @input="inputChange"></el-input>
+            <el-input
+              v-model="formData[formItemConfig.prop]"
+              v-bind="formItemConfig.props"
+              clearable
+              @input="inputChange"
+            ></el-input>
           </div>
         </el-form-item>
         <!-- inputNumber 计数器 -->
@@ -56,8 +68,20 @@
           :prop="formItemProp"
         >
           <div class="form-item-content-border">
-            <el-select v-model="formData[formItemConfig.prop]" v-bind="formItemConfig.props" clearable @change="selectChange" style="width:100%;">
-              <el-option v-for="(item, index) in formItemConfig.options" :key="index" :label="item.label" :value="item.value"> </el-option>
+            <el-select
+              v-model="formData[formItemConfig.prop]"
+              v-bind="formItemConfig.props"
+              clearable
+              @change="selectChange"
+              style="width:100%;"
+            >
+              <el-option
+                v-for="(item, index) in formItemConfig.options"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
             </el-select>
           </div>
         </el-form-item>
@@ -160,7 +184,13 @@
           :prop="formItemProp"
         >
           <div class="form-item-content-border">
-            <el-time-picker v-model="formData[formItemConfig.prop]" v-bind="formItemConfig.props" clearable @change="timePickerChange" class="picker">
+            <el-time-picker
+              v-model="formData[formItemConfig.prop]"
+              v-bind="formItemConfig.props"
+              clearable
+              @change="timePickerChange"
+              class="picker"
+            >
             </el-time-picker>
           </div>
         </el-form-item>
@@ -177,15 +207,42 @@
             <el-date-picker
               v-model="formData[formItemConfig.prop]"
               v-bind="formItemConfig.props"
-              :value-format="formItemConfig.props && formItemConfig.props.valueFormat ? formItemConfig.props.valueFormat : 'yyyy-MM-dd'"
-              :range-separator="formItemConfig.props && formItemConfig.props.rangeSeparator ? formItemConfig.props.rangeSeparator : '至'"
-              :start-placeholder="formItemConfig.props && formItemConfig.props.startPlaceholder ? formItemConfig.props.startPlaceholder : '开始时间'"
-              :end-placeholder="formItemConfig.props && formItemConfig.props.endPlaceholder ? formItemConfig.props.endPlaceholder : '结束时间'"
+              :value-format="
+                formItemConfig.props && formItemConfig.props.valueFormat
+                  ? formItemConfig.props.valueFormat
+                  : 'yyyy-MM-dd'
+              "
+              :range-separator="
+                formItemConfig.props && formItemConfig.props.rangeSeparator ? formItemConfig.props.rangeSeparator : '至'
+              "
+              :start-placeholder="
+                formItemConfig.props && formItemConfig.props.startPlaceholder
+                  ? formItemConfig.props.startPlaceholder
+                  : '开始时间'
+              "
+              :end-placeholder="
+                formItemConfig.props && formItemConfig.props.endPlaceholder
+                  ? formItemConfig.props.endPlaceholder
+                  : '结束时间'
+              "
               clearable
               @change="datePickerChange"
               class="picker"
             >
             </el-date-picker>
+          </div>
+        </el-form-item>
+        <!-- datePicker 富文本编辑器 -->
+        <el-form-item
+          v-else-if="formItemConfig.type == 'editor'"
+          v-bind="formItemConfig"
+          :required="undefined"
+          label=""
+          labelWidth=""
+          :prop="formItemProp"
+        >
+          <div class="form-item-content-border">
+            <d2-quill v-model="formData[formItemConfig.prop]"></d2-quill>
           </div>
         </el-form-item>
         <!-- slot 自定义 -->
@@ -211,7 +268,6 @@
 // import uploadFile from './uploadFile.vue';
 // import imageAndText from './imageAndText.vue';
 import timer from './timer.vue';
-// import editor from '../../../j-editor';
 export default {
   data() {
     return {};
@@ -222,7 +278,6 @@ export default {
     // uploadFile,
     // imageAndText,
     timer,
-    // editor
   },
   props: {
     // 配置数据
@@ -356,7 +411,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 div {
   box-sizing: border-box;
 }
@@ -364,6 +419,11 @@ div {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 22px;
+  ::v-deep {
+    .ql-editor {
+      min-height: 200px;
+    }
+  }
 }
 .form-item-wrapper {
   display: flex;
@@ -423,6 +483,8 @@ div {
 }
 .normal .form-item-content-border {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   height: 100%;
   box-sizing: border-box;
   border-top: 1px solid;
@@ -441,6 +503,8 @@ div {
 }
 .card .form-item-content-border {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   height: 100%;
   box-sizing: border-box;
   border-top: 1px solid;

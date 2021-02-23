@@ -22,7 +22,8 @@
         @change="selectChange"
         class="row-full"
       >
-        <el-option v-for="(item, index) in columnItem.options" :key="index" :label="item.label" :value="item.value"> </el-option>
+        <el-option v-for="(item, index) in columnItem.options" :key="index" :label="item.label" :value="item.value">
+        </el-option>
       </el-select>
     </template>
     <!-- inputNumber 计数器 -->
@@ -43,7 +44,12 @@
     </template>
     <!-- checkbox 多选框 -->
     <template v-if="columnItem.type === 'checkbox'">
-      <el-checkbox v-model="scope.row[columnItem.prop]" v-bind="columnItem.props" :disabled="getDisabled" @change="chechkboxChange"></el-checkbox>
+      <el-checkbox
+        v-model="scope.row[columnItem.prop]"
+        v-bind="columnItem.props"
+        :disabled="getDisabled"
+        @change="chechkboxChange"
+      ></el-checkbox>
     </template>
     <!-- switch 开关 -->
     <template v-if="columnItem.type === 'switch'">
@@ -61,8 +67,20 @@
     <!-- img 图片展示 -->
     <template v-if="columnItem.type === 'img'">
       <div class="img">
-        <img :src="getImgSrc(this.formatterData(scope.row[columnItem.prop]))" alt="" @click="previewFlag = true" @error="imgError" />
-        <jDialog v-if="previewFlag" :visible.sync="previewFlag" title="图片预览" :width="'30rem'" :fullscreen="true" :footActive="false">
+        <img
+          :src="getImgSrc(this.formatterData(scope.row[columnItem.prop]))"
+          alt=""
+          @click="previewFlag = true"
+          @error="imgError"
+        />
+        <jDialog
+          v-if="previewFlag"
+          :visible.sync="previewFlag"
+          title="图片预览"
+          :width="'30rem'"
+          :fullscreen="true"
+          :footActive="false"
+        >
           <div class="previewImg">
             <img :src="getImgSrc(this.formatterData(scope.row[columnItem.prop]))" alt="" @error="imgError" />
           </div>
@@ -71,17 +89,30 @@
     </template>
     <!-- link 链接 -->
     <template v-if="columnItem.type === 'link'">
-      <div class="link" :class="getDisabled ? 'disabled' : ''" @click="linkClick">{{ formatterData(scope.row[columnItem.prop]) }}</div>
+      <div class="link" :class="getDisabled ? 'disabled' : ''" @click="linkClick">
+        {{ formatterData(scope.row[columnItem.prop]) }}
+      </div>
     </template>
     <!-- operation 操作栏 -->
     <template v-if="columnItem.type === 'operation'">
-      <el-button type="text" v-for="(item, index) in getOperation" :key="index" v-bind="item" @click="operationClick(item)">
+      <el-button
+        type="text"
+        v-for="(item, index) in getOperation"
+        :key="index"
+        v-bind="item"
+        @click="operationClick(item)"
+      >
         {{ item.label }}
       </el-button>
       <el-dropdown v-if="getOperation_dropdown.length > 0">
         <i class="el-icon-arrow-down el-icon--right"></i>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item, index) in getOperation_dropdown" :key="index" v-bind="item" @click.native="operationClick(item)">
+          <el-dropdown-item
+            v-for="(item, index) in getOperation_dropdown"
+            :key="index"
+            v-bind="item"
+            @click.native="operationClick(item)"
+          >
             {{ item.label }}
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -119,7 +150,9 @@ export default {
   computed: {
     // operation按钮的取值逻辑： 先取行数据里面的，再取列配置的公共数据   默认最大展示值为3
     getOperation: function() {
-      let operations = this.scope.row[this.columnItem.prop] ? this.scope.row[this.columnItem.prop] : this.columnItem.operations;
+      let operations = this.scope.row[this.columnItem.prop]
+        ? this.scope.row[this.columnItem.prop]
+        : this.columnItem.operations;
       // 拦截处理数据
       operations = this.formatterData(operations);
       if (operations.length > this.columnItem.showMax ? this.columnItem.showMax : 3) {
@@ -130,7 +163,9 @@ export default {
     },
     // operation按钮的取值逻辑： 先取行数据里面的，再取列配置的公共数据   默认最大展示值为3
     getOperation_dropdown: function() {
-      let operations = this.scope.row[this.columnItem.prop] ? this.scope.row[this.columnItem.prop] : this.columnItem.operations;
+      let operations = this.scope.row[this.columnItem.prop]
+        ? this.scope.row[this.columnItem.prop]
+        : this.columnItem.operations;
       // 拦截处理数据
       operations = this.formatterData(operations);
       if (operations.length > this.columnItem.showMax ? this.columnItem.showMax : 3) {
@@ -142,9 +177,9 @@ export default {
     getSwitchText: function() {
       let text = '';
       if (this.columnItem && this.columnItem.props) {
-        if (this.columnItem.props.activeText != undefined && this.columnItem.props.inactiveText != undefined) {
+        if (this.columnItem.props.activeText !== undefined && this.columnItem.props.inactiveText !== undefined) {
           if (this.columnItem.props.activeValue) {
-            if (this.scope.row[this.columnItem.prop] == this.columnItem.props.activeValue) {
+            if (this.scope.row[this.columnItem.prop] === this.columnItem.props.activeValue) {
               text = this.columnItem.props.activeText;
             } else {
               text = this.columnItem.props.inactiveText;
@@ -158,8 +193,13 @@ export default {
     getDisabled: function() {
       let disabled = false;
       if (this.columnItem && this.columnItem.props && this.columnItem.props.disabled) {
-        if (typeof this.columnItem.props.disabled == 'function') {
-          disabled = this.columnItem.props.disabled(this.scope.row, this.scope.column, this.scope.row[this.columnItem.prop], this.scope.$index);
+        if (typeof this.columnItem.props.disabled === 'function') {
+          disabled = this.columnItem.props.disabled(
+            this.scope.row,
+            this.scope.column,
+            this.scope.row[this.columnItem.prop],
+            this.scope.$index,
+          );
         } else {
           disabled = this.columnItem.props.disabled;
         }
