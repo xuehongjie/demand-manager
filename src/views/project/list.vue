@@ -8,8 +8,18 @@
         <el-row type="flex" class="project-info">
           <el-col :span="16">{{ project.name }}</el-col>
           <el-col class="operation-wrapper" :span="8">
-            <el-button class="button-operation" type="text" icon="el-icon-edit-outline" @click.stop="editClick(project)"></el-button>
-            <el-button class="button-operation" type="text" icon="el-icon-delete" @click.stop="deleteClick(project)"></el-button>
+            <el-button
+              class="button-operation"
+              type="text"
+              icon="el-icon-edit-outline"
+              @click.stop="editClick(project)"
+            ></el-button>
+            <el-button
+              class="button-operation"
+              type="text"
+              icon="el-icon-delete"
+              @click.stop="deleteClick(project)"
+            ></el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -63,11 +73,12 @@ export default {
     // 点击项目
     projectClick(project) {
       console.log(project);
-      let { id } = project;
+      let { id, name } = project;
       this.$router.push({
         name: 'requirementList',
         query: {
           id,
+          title: name,
         },
       });
     },
@@ -98,9 +109,6 @@ export default {
   },
   created() {
     this.init();
-  },
-  activated() {
-    console.log('-------------activated--');
   },
 };
 </script>

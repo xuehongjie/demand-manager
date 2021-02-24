@@ -113,6 +113,17 @@ export default {
       };
     },
   },
+  watch: {
+    $route: {
+      handler(to) {
+        let { query } = to;
+        this.query = query || {};
+        this.init();
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
   methods: {
     // 初始化页面
     init() {
@@ -155,13 +166,14 @@ export default {
     // 前往发布需求页面
     clickGoPublish(item) {
       let { id: projectId = '' } = this.query;
-      let { id = '' } = item || {};
+      let { id = '', title } = item || {};
       let { type } = this.tabInfo || {};
       let routeName = 'requirementPublish';
       let query = {
         projectId,
         requirementId: id,
         type,
+        title,
       };
 
       if (id) {
@@ -180,18 +192,26 @@ export default {
       switch (prop) {
         // 点击标题时跳转
         case 'title':
-          this.clickGoPublish(row);
+          this.clickGoDetail(row);
           break;
         case 'jyf_operations':
           this.clickGoPublish(row);
           break;
       }
     },
-  },
-  created() {
-    let { query } = this.$route;
-    this.query = query || {};
-    this.init();
+    // 前往需求详情页面
+    clickGoDetail(item) {
+      let { id = '', project_id: projectId, title } = item || {};
+
+      this.$router.push({
+        name: 'requirementDetail',
+        query: {
+          projectId,
+          requirementId: id,
+          title: `${title}详情`,
+        },
+      });
+    },
   },
 };
 </script>

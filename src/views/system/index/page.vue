@@ -98,12 +98,12 @@ export default {
       switch (prop) {
         // 点击标题时跳转
         case 'title':
-          this.clickGoEdit(row);
+          this.clickGoDetail(row);
           break;
       }
     },
     // 前往需求详情页面
-    clickGoEdit(item) {
+    clickGoDetail(item) {
       let { id = '', project_id: projectId } = item || {};
 
       this.$router.push({

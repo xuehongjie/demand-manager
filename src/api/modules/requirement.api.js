@@ -2,6 +2,7 @@ import url from '@/url';
 import { statusText } from '@/map/requirement/status';
 import { severityText } from '@/map/requirement/severity';
 import { priorityText } from '@/map/requirement/priority';
+import { typeText } from '@/map/requirement/type';
 
 const { requirement } = url;
 
@@ -80,6 +81,15 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
       method: 'POST',
       url: requirement.detail,
       data: { id },
+    }).then(res => {
+      let { type, severity, priority } = res;
+
+      return {
+        ...res,
+        typeText: typeText[type],
+        severityText: severityText[severity],
+        priorityText: priorityText[priority],
+      };
     });
   },
 });

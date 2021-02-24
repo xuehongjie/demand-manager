@@ -16,9 +16,7 @@
           :prop="formItemProp"
         >
           <div class="form-item-content-border">
-            <div class="text">
-              {{ formData[formItemConfig.prop] }}
-            </div>
+            <div class="text" v-html="formData[formItemConfig.prop]"></div>
           </div>
         </el-form-item>
         <!-- input 输入框 -->
@@ -442,6 +440,7 @@ div {
   border-color: #e8e8e8;
   border-radius: 4px 0px 0px 4px;
   line-height: 40px;
+  font-size: 14px;
 }
 .form-item-label span {
   padding-left: 3px;

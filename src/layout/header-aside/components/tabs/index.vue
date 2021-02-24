@@ -20,7 +20,7 @@
           <el-tab-pane
             v-for="page in opened"
             :key="page.fullPath"
-            :label="page.meta.title || '未命名'"
+            :label="page.query.title || page.meta.title || '未命名'"
             :name="page.fullPath"
             :closable="isTabClosable(page)"/>
         </el-tabs>

@@ -1,10 +1,18 @@
 <template>
   <d2-container class="page-requirement-publish">
-    <j-form :form-config="formConfig" :form-data="requirement" @submit="formSubmit" ref="jForm" foot-active></j-form>
+    <j-form
+      :form-config="formConfig"
+      :form-data="requirement"
+      @submit="formSubmit"
+      @cancel="close"
+      ref="jForm"
+      foot-active
+    ></j-form>
   </d2-container>
 </template>
 <script>
 import { statusMap } from '@/map/requirement/status';
+import { typeMap } from '@/map/requirement/type';
 
 export default {
   name: 'RequirementPublish',
@@ -35,8 +43,9 @@ export default {
       this.formConfig = formConfigMap[type];
       this.requirement.type = type;
 
+      this.getUserList();
       // 缺陷才请求严重程度等下拉选项
-      if (`${type}` === '2') {
+      if (`${type}` === typeMap.bug) {
         this.initSelectOption();
       }
 
@@ -51,6 +60,12 @@ export default {
         let { requirement_priority: priority, requirement_severity: severity } = res;
         this.formConfig.priority.options = priority || [];
         this.formConfig.severity.options = severity || [];
+      });
+    },
+    // 获取用户列表
+    getUserList() {
+      return this.$api.SYS_USER_LIST().then(list => {
+        this.formConfig.handler_id.options = list || [];
       });
     },
     // 获取需求详情
@@ -96,7 +111,15 @@ export default {
       console.log('------formSubmit-----', model);
       this.$api.REQUIREMENT_ADD_OR_UPDATE(params).then(res => {
         console.log('-------------res', res);
+        this.close();
       });
+    },
+    // 关闭当前页面
+    close() {
+      let { resolved } = this.$router.resolve(this.$route);
+      let { fullPath } = resolved;
+      this.$store.dispatch('d2admin/page/close', { tagName: fullPath });
+      this.$router.back();
     },
   },
 };

@@ -48,31 +48,13 @@
 <script>
 import { mapActions } from 'vuex';
 import localeMixin from '@/locales/mixin.js';
+import CryptoJS from 'crypto-js';
 
 export default {
   mixins: [localeMixin],
   data() {
     return {
       codeUrl: '',
-      // 快速选择用户
-      dialogVisible: false,
-      users: [
-        {
-          name: 'Admin',
-          account: 'admin',
-          password: 'admin',
-        },
-        {
-          name: 'Editor',
-          account: 'editor',
-          password: 'editor',
-        },
-        {
-          name: 'User1',
-          account: 'user1',
-          password: 'user1',
-        },
-      ],
       // 表单
       formLogin: {
         account: 'test',
@@ -132,8 +114,15 @@ export default {
       this.$refs.loginForm.validate(valid => {
         // 判断校验是否通过
         if (valid) {
+          let { password } = this.formLogin;
+
           // 调用登录接口
-          this.login(this.formLogin).then(() => {
+          this.login({
+            ...this.formLogin,
+            password: CryptoJS.MD5(password)
+              .toString()
+              .toUpperCase(),
+          }).then(() => {
             // 重定向对象不存在则返回顶层路径
             this.$router.replace(this.$route.query.redirect || '/');
           });
