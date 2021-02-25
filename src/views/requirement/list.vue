@@ -19,6 +19,8 @@
   </d2-container>
 </template>
 <script>
+import { typeMap } from '@/map/requirement/type';
+
 export default {
   name: 'RequirementList',
   data() {
@@ -165,6 +167,10 @@ export default {
     },
     // 前往发布需求页面
     clickGoPublish(item) {
+      let titleMap = {
+        [typeMap.requment]: '发布需求',
+        [typeMap.bug]: '发布缺陷',
+      };
       let { id: projectId = '' } = this.query;
       let { id = '', title } = item || {};
       let { type } = this.tabInfo || {};
@@ -173,7 +179,7 @@ export default {
         projectId,
         requirementId: id,
         type,
-        title,
+        title: title || titleMap[type],
       };
 
       if (id) {

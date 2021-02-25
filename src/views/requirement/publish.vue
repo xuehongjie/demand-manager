@@ -7,17 +7,19 @@
       @cancel="close"
       ref="jForm"
       foot-active
+      v-loading="loading"
+      is-row
     ></j-form>
   </d2-container>
 </template>
 <script>
-import { statusMap } from '@/map/requirement/status';
 import { typeMap } from '@/map/requirement/type';
 
 export default {
   name: 'RequirementPublish',
   data() {
     return {
+      loading: false,
       query: {},
       requirement: {}, // 项目信息
       formConfig: {},
@@ -44,10 +46,7 @@ export default {
       this.requirement.type = type;
 
       this.getUserList();
-      // 缺陷才请求严重程度等下拉选项
-      if (`${type}` === typeMap.bug) {
-        this.initSelectOption();
-      }
+      this.initSelectOption();
 
       if (requirementId) {
         this.getRequirementDetail();
@@ -55,46 +54,43 @@ export default {
     },
     // 初始化下拉框选项
     initSelectOption() {
+      let { type } = this.query;
+
       let codeList = ['requirement_priority', 'requirement_severity'];
       this.$api.getDictionary(codeList).then(res => {
         let { requirement_priority: priority, requirement_severity: severity } = res;
         this.formConfig.priority.options = priority || [];
-        this.formConfig.severity.options = severity || [];
+        // 缺陷才请求严重程度等下拉选项
+        if (`${type}` === typeMap.bug) {
+          this.formConfig.severity.options = severity || [];
+        }
       });
     },
     // 获取用户列表
     getUserList() {
-      return this.$api.SYS_USER_LIST().then(list => {
-        this.formConfig.handler_id.options = list || [];
+      let { projectId } = this.query;
+      return this.$api.SYS_USER_LIST({ projectId }).then(list => {
+        if (this.formConfig.handler_id) {
+          this.formConfig.handler_id.options = list || [];
+        }
       });
     },
     // 获取需求详情
     getRequirementDetail() {
       let { requirementId } = this.query;
-      return this.$api.REQUIREMENT_DETAIL(requirementId).then(res => {
-        let { status } = res;
-        let statusActionMap = {
-          [statusMap.todo]: [
-            { label: '保持', value: status },
-            { label: '接受', value: statusMap.accept },
-          ],
-          [statusMap.accept]: [
-            { label: '保持', value: status },
-            { label: '已解决', value: statusMap.done },
-          ],
-          [statusMap.done]: [
-            { label: '保持', value: status },
-            { label: '关闭', value: statusMap.closed },
-          ],
-        };
-
-        console.log(res);
-        this.requirement = {
-          ...this.requirement,
-          ...res,
-        };
-        this.formConfig.status.options = statusActionMap[status] || [{ label: '保持', value: status }];
-      });
+      this.loading = true;
+      return this.$api
+        .REQUIREMENT_DETAIL(requirementId)
+        .then(res => {
+          console.log(res);
+          this.requirement = {
+            ...this.requirement,
+            ...res,
+          };
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     confirm() {
       this.$refs.jForm.submitForm();
@@ -108,11 +104,21 @@ export default {
       if (requirementId) {
         params.id = requirementId;
       }
+      delete params.typeText;
+      delete params.severityText;
+      delete params.priorityText;
       console.log('------formSubmit-----', model);
-      this.$api.REQUIREMENT_ADD_OR_UPDATE(params).then(res => {
-        console.log('-------------res', res);
-        this.close();
-      });
+      this.loading = true;
+      this.$api
+        .REQUIREMENT_ADD_OR_UPDATE(params)
+        .then(res => {
+          console.log('-------------res', res);
+          this.loading = false;
+          this.close();
+        })
+        .catch(e => {
+          this.loading = false;
+        });
     },
     // 关闭当前页面
     close() {

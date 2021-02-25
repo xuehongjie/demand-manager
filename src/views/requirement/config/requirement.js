@@ -13,20 +13,19 @@ export default {
     props: {},
     rules: [{ required: true, message: '需求描述不能为空' }],
   },
-  forecast_start_time: {
-    type: 'datePicker',
-    label: '预计开始时间',
-    props: {},
-  },
-  forecast_end_time: {
-    type: 'datePicker',
-    label: '预计结束时间',
-    props: {},
+  priority: {
+    type: 'select',
+    label: '优先级',
+    width: '300px',
+    props: {
+      type: 'text',
+    },
+    options: [],
   },
   handler_id: {
     type: 'select',
     label: '处理人',
-    width: 200,
+    width: '300px',
     props: {},
     options: [],
   },

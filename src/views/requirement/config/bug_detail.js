@@ -19,6 +19,12 @@ export default {
     type: 'text',
     label: '优先级',
   },
+  handler_id: {
+    type: 'select',
+    label: '处理人',
+    props: {},
+    options: [],
+  },
   status: {
     type: 'radio',
     label: '下一状态',

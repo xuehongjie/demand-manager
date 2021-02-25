@@ -6,8 +6,15 @@
           <i class="iconfont icon-project"></i>
         </div>
         <el-row type="flex" class="project-info">
-          <el-col :span="16">{{ project.name }}</el-col>
-          <el-col class="operation-wrapper" :span="8">
+          <el-col :span="12">{{ project.name }}</el-col>
+          <el-col class="operation-wrapper" :span="12">
+            <el-button
+              class="button-operation"
+              type="text"
+              icon="el-icon-user"
+              @click.stop="assignClick(project)"
+              v-if="userInfo.id === project.owner_id"
+            ></el-button>
             <el-button
               class="button-operation"
               type="text"
@@ -36,26 +43,36 @@
     <!-- 新建项目 -->
     <dialog-add :default-value="currentData" :visible.sync="showProjectAdd" @confirm="projectAdd" />
     <dialog-delete :visible.sync="showProjectDelete" @confirm="projectDelete" />
+    <dialog-assign :visible.sync="showAssign" :project-id="currentData && currentData.id" @done="resetData" />
   </d2-container>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import DialogAdd from './components/DialogAdd';
 import DialogDelete from './components/DialogDelete';
+import DialogAssign from './components/DialogAssign';
 
 export default {
   name: 'ProjectList',
   components: {
     DialogAdd,
     DialogDelete,
+    DialogAssign,
   },
   data() {
     return {
       projectList: [],
       showProjectAdd: false, // 是否展示添加弹窗
       showProjectDelete: false, // 是否展示删除弹窗
+      showAssign: false, // 是否展示人员分配名单
       currentData: null, // 当前点击的数据
     };
+  },
+  computed: {
+    ...mapState('d2admin', {
+      userInfo: state => state.user.info,
+    }),
   },
   methods: {
     // 初始化页面
@@ -82,6 +99,11 @@ export default {
         },
       });
     },
+    // 点击人员分配
+    assignClick(project) {
+      this.currentData = project;
+      this.showAssign = true;
+    },
     // 点击编辑按钮
     editClick(project) {
       this.currentData = project;
@@ -105,6 +127,9 @@ export default {
         this.currentData = null;
         this.getProjectList();
       });
+    },
+    resetData() {
+      this.currentData = null;
     },
   },
   created() {

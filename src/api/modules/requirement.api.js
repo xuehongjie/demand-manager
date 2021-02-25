@@ -81,15 +81,19 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
       method: 'POST',
       url: requirement.detail,
       data: { id },
-    }).then(res => {
-      let { type, severity, priority } = res;
+    })
+      .then(res => {
+        let { type, severity, priority } = res;
 
-      return {
-        ...res,
-        typeText: typeText[type],
-        severityText: severityText[severity],
-        priorityText: priorityText[priority],
-      };
-    });
+        return {
+          ...res,
+          typeText: typeText[type],
+          severityText: severityText[severity],
+          priorityText: priorityText[priority],
+        };
+      })
+      .catch(e => {
+        return {};
+      });
   },
 });

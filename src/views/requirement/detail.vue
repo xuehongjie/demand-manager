@@ -7,6 +7,8 @@
       @cancel="close"
       ref="jForm"
       foot-active
+      v-loading="loading"
+      is-row
     >
       <template #description="">11</template>
     </j-form>
@@ -17,9 +19,10 @@ import { statusMap } from '@/map/requirement/status';
 import { typeMap } from '@/map/requirement/type';
 
 export default {
-  name: 'RequirementPublish',
+  name: 'RequirementDetail',
   data() {
     return {
+      loading: false,
       query: {},
       requirement: {}, // 项目信息
       formConfigMap: {
@@ -40,44 +43,60 @@ export default {
     },
   },
   methods: {
-    init() {
-      this.getRequirementDetail();
+    async init() {
+      let { projectId } = this.query;
+      let promises = [this.$api.SYS_USER_LIST({ projectId }), this.getRequirementDetail()];
+      Promise.all(promises).then(([userList]) => {
+        if (this.formConfig.handler_id) {
+          this.formConfig.handler_id.options = userList || [];
+        }
+      });
     },
     // 获取需求详情
     getRequirementDetail() {
       let { requirementId } = this.query;
-      return this.$api.REQUIREMENT_DETAIL(requirementId).then(res => {
-        let { status, type } = res;
-        let statusActionMap = {
-          [statusMap.todo]: [
-            { label: '保持', value: status },
-            { label: '接受', value: statusMap.accept },
-          ],
-          [statusMap.accept]: [
-            { label: '保持', value: status },
-            { label: '已解决', value: statusMap.done },
-          ],
-          [statusMap.done]: [
-            { label: '保持', value: status },
-            { label: '关闭', value: statusMap.closed },
-          ],
-        };
-        let formConfig = this.formConfigMap[type];
+      this.loading = true;
+      return this.$api
+        .REQUIREMENT_DETAIL(requirementId)
+        .then(res => {
+          let { status, type } = res;
+          let statusActionMap = {
+            [statusMap.todo]: [
+              { label: '保持', value: status },
+              { label: '接受', value: statusMap.accept },
+            ],
+            [statusMap.accept]: [
+              { label: '保持', value: status },
+              { label: '已解决', value: statusMap.done },
+            ],
+            [statusMap.done]: [
+              { label: '保持', value: status },
+              { label: '关闭', value: statusMap.closed },
+            ],
+          };
+          let formConfig = this.formConfigMap[type];
 
-        this.formConfig = formConfig;
-        if (`${type}` === typeMap.requirement) {
-          this.formConfig.status.options = [
-            { label: '保持', value: status },
-            { label: '已完成', value: statusMap.done },
-          ];
-        } else {
-          this.formConfig.status.options = statusActionMap[status] || [{ label: '保持', value: status }];
-        }
+          this.formConfig = formConfig;
+          if (`${type}` === typeMap.requirement) {
+            this.formConfig.status.options = [
+              { label: '保持', value: status },
+              { label: '已完成', value: statusMap.done },
+            ];
+          } else {
+            this.formConfig.status.options = statusActionMap[status] || [{ label: '保持', value: status }];
+          }
 
-        console.log(res);
+          if (`${status}` === `${statusMap.closed}`) {
+            delete this.formConfig.status;
+          }
 
-        this.requirement = res;
-      });
+          console.log(res);
+
+          this.requirement = res;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     confirm() {
       this.$refs.jForm.submitForm();
@@ -95,10 +114,17 @@ export default {
       delete params.severityText;
       delete params.priorityText;
       console.log('------formSubmit-----', model);
-      this.$api.REQUIREMENT_ADD_OR_UPDATE(params).then(res => {
-        console.log('-------------res', res);
-        this.close();
-      });
+      this.loading = true;
+      this.$api
+        .REQUIREMENT_ADD_OR_UPDATE(params)
+        .then(res => {
+          console.log('-------------res', res);
+          this.loading = false;
+          this.close();
+        })
+        .catch(e => {
+          this.loading = false;
+        });
     },
     // 关闭当前页面
     close() {
