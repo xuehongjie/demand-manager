@@ -15,13 +15,21 @@ export default {
     type: 'datePicker',
     label: '预计开始时间',
     props: {},
-    width: 200,
   },
   forecast_end_time: {
     type: 'datePicker',
     label: '预计结束时间',
     props: {},
-    width: 200,
+  },
+  actual_start_time: {
+    type: 'datePicker',
+    label: '实际开始时间',
+    props: {},
+  },
+  actual_end_time: {
+    type: 'datePicker',
+    label: '实际结束时间',
+    props: {},
   },
   status: {
     type: 'radio',
