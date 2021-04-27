@@ -1,6 +1,6 @@
 <template>
   <d2-container class="page-home">
-    <el-tabs v-model="activeTab" @tab-click="handleClick">
+    <el-tabs v-model="activeTab" @tab-click="handleClick" v-if="tabList.length">
       <el-tab-pane :name="item.value" v-for="(item, index) in tabList" :key="index">
         <template slot="label">
           <el-badge :max="99" :value="item.todo_count">
@@ -67,9 +67,12 @@ export default {
 
         this.activeTab = value;
         this.tabList = list;
-        this.$nextTick(() => {
-          this.getRequirementList();
-        });
+
+        if (list.length) {
+          this.$nextTick(() => {
+            this.getRequirementList();
+          });
+        }
       });
     },
     // 获取项目列表

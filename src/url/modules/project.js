@@ -4,4 +4,5 @@ export default {
   delete: '/project/delete', // 删除项目
   tabList: '/project/tabList', // 项目的tab页签
   assign: '/project/assign', // 给用户分配项目
+  authList: '/project/auth/list', // 项目授权列表
 };

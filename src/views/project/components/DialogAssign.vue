@@ -7,7 +7,7 @@
     v-loading="loading"
   >
     <div class="dialog-add-wrapper">
-      <el-transfer v-model="value" :data="data"></el-transfer>
+      <el-transfer :titles="['未授权', '已授权']" v-model="value" :data="authList"></el-transfer>
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button size="mini" @click="dialogVisible = false">取 消</el-button>
@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       loading: false,
-      data: [],
+      authList: [],
       value: [],
       dialogVisible: false, // 是否展示弹窗
     };
@@ -62,12 +62,12 @@ export default {
   methods: {
     // 初始化数据
     init() {
-      this.getUserList();
+      this.getAuthList();
     },
     // 获取用户列表
-    getUserList() {
-      return this.$api.SYS_USER_LIST().then(res => {
-        this.data = res.map(item => {
+    getAuthList() {
+      return this.$api.PROJECT_AUTH_LIST().then(res => {
+        this.authList = res.map(item => {
           let { id, username } = item;
           return {
             ...item,

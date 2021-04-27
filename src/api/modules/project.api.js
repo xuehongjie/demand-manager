@@ -66,4 +66,14 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
       data,
     });
   },
+  /**
+   * 获取可授权的用户列表
+   * @returns 可授权的列表
+   */
+  PROJECT_AUTH_LIST() {
+    return request({
+      method: 'POST',
+      url: project.authList,
+    });
+  },
 });
