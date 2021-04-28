@@ -57,8 +57,8 @@ export default {
       codeUrl: '',
       // 表单
       formLogin: {
-        account: 'test',
-        password: '123456',
+        account: '',
+        password: '',
         code: '',
       },
       // 表单校验

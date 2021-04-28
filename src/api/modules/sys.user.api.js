@@ -39,4 +39,15 @@ export default ({ service, request, serviceForMock, requestForMock, mock, faker,
         return [];
       });
   },
+  /**
+   * @description 新增/修改需求
+   * @param {Object} data 需求数据
+   */
+  USER_ADD_OR_UPDATE(data = {}) {
+    return request({
+      method: 'POST',
+      url: user.addOrUpdate,
+      data,
+    });
+  },
 });

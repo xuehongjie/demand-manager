@@ -18,4 +18,10 @@ export const menuHeader = supplementPath([]);
 export const menuAside = supplementPath([
   { path: '/index', title: '工作台', icon: 'home' },
   { path: '/project/list', title: '项目', icon: 'th-large' },
+  {
+    path: '',
+    title: '系统管理',
+    icon: 'cogs',
+    children: [{ path: '/user/list', title: '用户', icon: 'user' }],
+  },
 ]);
